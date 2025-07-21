@@ -49,6 +49,7 @@
 
     <build>
         <plugins>
+            <!-- 支持mvn exec:java执行 -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>

@@ -5,12 +5,13 @@ import java.util.Map;
 
 public class DatabaseManager {
     private Connection connection;
-    private final String url;
-    private final String username;
-    private final String password;
-    private final String patentTable;
-    private final String keywordTable;
+    private final String url;           // 数据库连接URL
+    private final String username;      // 数据库用户名
+    private final String password;      // 数据库密码
+    private final String patentTable;   // 专利数据表名
+    private final String keywordTable;  // 关键词表名
 
+    // 初始化数据库管理器
     public DatabaseManager(String url, String username, String password,
                            String patentTable, String keywordTable) throws SQLException {
         this.url = url;
@@ -47,18 +48,18 @@ public class DatabaseManager {
         // 原始结果表
         String resultTableSql = "CREATE TABLE IF NOT EXISTS " + keywordTable + " (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                "patent_name VARCHAR(255) NOT NULL, " +
-                "main_class VARCHAR(50), " +
-                "classes TEXT, " +
-                "keywords TEXT" +
+                "patent_name VARCHAR(255) NOT NULL, " +     // 专利名称
+                "main_class VARCHAR(50), " +                // 主分类号
+                "classes TEXT, " +                          // 所有分类号
+                "keywords TEXT" +                           // 提取的关键词
                 ") CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
 
         // 关键词统计表
         String statsTableSql = "CREATE TABLE IF NOT EXISTS " + keywordTable + "_stats (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                "keyword VARCHAR(100) NOT NULL, " +
-                "count INT DEFAULT 0, " +
-                "UNIQUE KEY unique_keyword (keyword)" +
+                "keyword VARCHAR(100) NOT NULL, " +         // 关键词
+                "count INT DEFAULT 0, " +                   // 出现次数
+                "UNIQUE KEY unique_keyword (keyword)" +     // 唯一约束
                 ") CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
 
         try (Statement stmt = connection.createStatement()) {
@@ -68,7 +69,7 @@ public class DatabaseManager {
         }
     }
 
-    // 获取专利总数
+    // 分页获取专利总数
     public int getPatentCount() throws SQLException {
         checkConnection();
         String sql = "SELECT COUNT(*) FROM " + patentTable;
@@ -126,7 +127,7 @@ public class DatabaseManager {
             int updated = stmt.executeUpdate();
 
             // 如果没有更新任何记录，则插入新记录
-            if (updated == 0) {
+            if (updated == 0) {     // 无记录则插入
                 String insertSql = "INSERT INTO " + tableName + " (keyword, count) VALUES (?, 1)";
                 try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
                     insertStmt.setString(1, keyword);
@@ -136,7 +137,7 @@ public class DatabaseManager {
         }
     }
 
-    // 获取关键词统计（单个词）
+    // 获取关键词统计（单个词） 打印 top N 关键词
     public void printTopKeywords(int topN) throws SQLException {
         checkConnection();
         String tableName = keywordTable + "_stats";
@@ -159,6 +160,7 @@ public class DatabaseManager {
         }
     }
 
+    // 关闭连接
     public void close() throws SQLException {
         if (connection != null) {
             connection.close();

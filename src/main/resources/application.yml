@@ -2,15 +2,15 @@ database:
   url: "jdbc:mysql://172.16.12.52:3306/kejichengguo"
   username: "kjcg"
   password: "kjcg2025"
-  patentTable: "专利总表"
-  keywordTable: "关键词整理_04"
+  patentTable: "专利总表"         # 原始数据库
+  keywordTable: "关键词整理_04"   # 生成关键词表
 
 deepseek:
   apiKey: "sk-2e962ea8f5d341f48d0a8d331bfff193"
-  model: "deepseek-chat"  # 可替换为其他模型
+  model: "deepseek-chat"        # 可替换为其他模型
   endpoint: "https://api.deepseek.com/v1/chat/completions"
-  maxTokens: 200
-  temperature: 0.7
+  maxTokens: 200                # 最大返回token
+  temperature: 0.7              # 生成随机性控制
 
 analysis:
   maxPatents: 1000  # 最大处理专利数量

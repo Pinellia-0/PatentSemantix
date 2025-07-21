@@ -8,13 +8,13 @@ import java.nio.file.Paths;
 
 public class PatentAnalysis {
     public static void main(String[] args) {
-        final int MAX_RETRIES = 5;
+        final int MAX_RETRIES = 5;  // 最大重试次数
         int retryCount = 0;
         boolean success = false;
 
         while (retryCount < MAX_RETRIES && !success) {
             try {
-                // 1. 加载配置
+                // 1. 加载YAML配置
                 Yaml yaml = new Yaml();
                 InputStream in = Files.newInputStream(Paths.get("src/main/resources/application.yml"));
                 Map<String, Object> config = yaml.load(in);
@@ -66,6 +66,7 @@ public class PatentAnalysis {
                 System.err.println("⚠️ 程序执行错误 (" + retryCount + "/" + MAX_RETRIES + "): " + e.getMessage());
                 e.printStackTrace();
 
+                // 指数退避重试
                 try {
                     int delay = 5000 * retryCount;
                     System.out.println("⏳ 等待 " + delay/1000 + " 秒后重试...");

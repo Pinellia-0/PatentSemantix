@@ -4,10 +4,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class KeywordAnalyzer {
-    private final DatabaseManager dbManager;
-    private final DeepSeekClient deepSeekClient;
-    private final int batchSize;
-    private final int pageSize;
+    private final DatabaseManager dbManager;        // 数据库管理器
+    private final DeepSeekClient deepSeekClient;    // API客户端
+    private final int batchSize;                    // API批量处理大小
+    private final int pageSize;                     // 数据库分页大小
 
     public KeywordAnalyzer(DatabaseManager dbManager, DeepSeekClient deepSeekClient,
                            int batchSize, int pageSize) {
@@ -17,6 +17,7 @@ public class KeywordAnalyzer {
         this.pageSize = pageSize;
     }
 
+    // 专利处理主流程
     public void processPatents(int maxPatents) throws Exception {
         int totalCount = dbManager.getPatentCount();
         int processed = 0;
@@ -35,6 +36,7 @@ public class KeywordAnalyzer {
                         processed++;
                         apiCalls++;
 
+                        // 获取专利数据
                         String patentName = rs.getString("专利名称");
                         String mainClass = rs.getString("主分类号");
                         String classes = rs.getString("分类号");
@@ -81,6 +83,7 @@ public class KeywordAnalyzer {
         System.out.printf("\n🎉 完成! 共处理 %d/%d 项专利%n", processed, Math.min(totalCount, maxPatents));
     }
 
+    // 字符串截断显示
     private String truncateString(String str, int maxLength) {
         if (str == null) return "";
         return str.length() > maxLength ? str.substring(0, maxLength) + "..." : str;
